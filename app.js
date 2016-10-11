@@ -13,7 +13,6 @@ var session = require('express-session');
 
 
 var routes = require('./routes/router');
-var users = require('./routes/users');
 
 var app = express();
 
@@ -36,7 +35,6 @@ app.use(passport.session()); // persistent login sessions
 require('./config/passport.js')(passport); // pass passport for configuration
 //require('./routes/router.js')(app, passport); // load our routes and pass in our app and fully configured passport
 app.use(express.static('public'));
-//
 app.use('/', routes);
 //app.use('/users', users);
 

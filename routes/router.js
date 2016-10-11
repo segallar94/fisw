@@ -3,6 +3,15 @@ var express = require('express');
 var passport = require('passport');
 var app= express();
 
+var needsGroup = function(admin) {
+    return function(req, res, next) {
+        if (req.user && req.user.admin === admin)
+            next();
+        else
+            res.send(401, 'Unauthorized');
+    };
+};
+
 /* GET home page. */
 app.get('/', function(req, res, next) {
   res.render('index.ejs', { title: 'Fsociety' });
@@ -19,26 +28,63 @@ app.post('/login', passport.authenticate('local-login', {
     failureFlash : true // allow flash messages
 }));
 
-app.get('/signup', function(req, res) {
+app.get('/login-admin', function(req, res) {
+    // render the page and pass in any flash data if it exists
+    res.render('login-admin.ejs', { message: req.flash('loginMessage') });
+});
+
+app.post('/login-admin', passport.authenticate('local-login', {
+    successRedirect : '/profile-admin', // redirect to the secure profile section
+    failureRedirect : '/login-admin', // redirect back to the signup page if there is an error
+    failureFlash : true // allow flash messages
+}));
+
+app.get('/signup', isLoggedIn, needsGroup(1), function(req, res) {
   // render the page and pass in any flash data if it exists
   res.render('signup.ejs', { message: req.flash('signupMessage') });
 });
 
 // process the signup form
-app.post('/signup', passport.authenticate('local-signup', {
-    successRedirect : '/profile', // redirect to the secure profile section
+app.post('/signup', isLoggedIn, needsGroup(1), passport.authenticate('local-signup', {
+    successRedirect : '/profile-admin', // redirect to the secure profile section
     failureRedirect : '/signup', // redirect back to the signup page if there is an error
     failureFlash : true // allow flash messages
 }));
 
-app.get('/profile', isLoggedIn , function(req, res) {
-    // render the page and pass in any flash data if it exists
+app.get('/profile', isLoggedIn, needsGroup(0) , function(req, res) {
     res.render('profile.ejs', {user:req.user});
+});
+
+app.get('/profile-admin', isLoggedIn, needsGroup(1) , function(req, res) {
+    res.render('profile-admin.ejs', {user:req.user});
 });
 
 app.get('/logout', function(req, res) {
     req.logout();
     res.redirect('/');
+});
+
+//GET usuarios
+app.get('/users', isLoggedIn, needsGroup(1), function(req, res, next) {
+    try {
+        /*var query = url.parse(req.url,true).query;
+         console.log(query);*/
+        models.Usuario.findAll({where: {admin: 0}}).then(function (user) {
+            //for(var x=0;x<user.length;x++){
+            //console.log(user[x].username);
+            //res.render('VerUsuario.html', {title: 'Listar Usuarios', resultado: user});
+            res.json(user);
+            //}
+        });
+        //res.render('VerUsuario.html', {title: 'Listar Usuarios'});
+    } catch (ex) {
+        console.error("Internal error:" + ex);
+        return next(ex);
+    }
+});
+
+app.get('/users-list', isLoggedIn, needsGroup(1) , function(req, res) {
+    res.render('users-list.ejs', {user:req.user});
 });
 
 function isLoggedIn(req, res, next) {

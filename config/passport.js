@@ -11,6 +11,7 @@ var dbconfig = require('./database');
 var connection = mysql.createConnection(dbconfig.connection);
 
 connection.query('USE ' + dbconfig.database);
+//connection.query("INSERT INTO Usuario (email,password,admin,id) VALUES ('admin','admin',1,1)");
 // expose this function to our app using module.exports
 module.exports = function(passport) {
 
@@ -64,12 +65,12 @@ module.exports = function(passport) {
                         var insertQuery = "INSERT INTO Usuario ( email, password ) values ("+ email+ "," +password + ")";
                         models.Usuario.create({
                             email: email,
-                            password: password
+                            password: password,
+                            admin: 0
                         }).then(function (result) {
-                            console.log(result);
                             newUserMysql.id = result.id;
 
-                            return done(null,newUserMysql);
+                            return done(null,req.user);
                         });
                         /*connection.query(insertQuery,function (err,rows) {
                             console.log('hola');
@@ -97,9 +98,6 @@ module.exports = function(passport) {
             },
             function(req, email, password, done) { // callback with email and password from our form
                 connection.query('SELECT * FROM Usuario WHERE email = "'  + email +  '"', function(err, rows){
-                    console.log("in");
-                    console.log(rows.length);
-                    console.log(err);
                     if (err)
                         return done(err);
                     if (rows.length==0) {
@@ -112,7 +110,6 @@ module.exports = function(passport) {
 
                     // all is well, return successful user
                     return done(null, rows[0]);
-                    console.log("out");
                 });
             })
     );
