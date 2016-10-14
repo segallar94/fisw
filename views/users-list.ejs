@@ -2,19 +2,59 @@
 <html ng-app= "myapp">
 <head>
   <title>Listado de encuestadores</title>
+    <link rel="stylesheet"
+          href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
     <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.0-beta.1/angular.min.js"></script>
     <script>
         angular.module("myapp",[])
                 .controller("mycontroller",function ($scope,$http) {
+                    $scope.newField = {};
+                    $scope.editing = false;
                     $scope.title="Listar Usuario";
-                    console.log("hola");
-                    $http.get("http://localhost:8080/users")
+
+                    $http.get("http://localhost:8080/users", {cache: false})
                             .success(function (data) {
-                                console.log(data);
                                 $scope.users=data;
                             })
                             .error(function (err) {
                             })
+
+                    $scope.delete = function ($index,id) {
+                        $scope.users.splice($index, 1 );
+                        $http.delete("http://localhost:8080/users/" + id)
+                                .success(function (data) {
+                                    $scope.users=data;
+                                })
+                                .error(function (err) {
+                                })
+                    }
+
+                    $scope.edit = function(field) {
+                        $scope.editing = $scope.users.indexOf(field);
+                        $scope.newField = angular.copy(field);
+                    }
+
+                    $scope.saveField = function($index,field) {
+                        if ($scope.editing !== false) {
+                            $scope.users[$scope.editing] = $scope.newField;
+                            $scope.editing = false;
+                            $http.put("http://localhost:8080/users/" + field.id, field)
+                                    .success(function (data){
+                                        $scope.users[$index] = data;
+                                    })
+                                    .error(function (err) {
+                                    })
+                        }
+                    };
+
+                    $scope.cancel = function(index) {
+                        if ($scope.editing !== false) {
+                            $scope.users[$scope.editing] = $scope.newField;
+                            $scope.editing = false;
+                        }
+                    };
                 });
     </script>
   <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css"> <!-- load bootstrap css -->
@@ -34,11 +74,22 @@
     </tr>
     </thead>
     <tbody>
-    <tr ng-repeat="usuario in users">
+    <tr ng-repeat="usuario in users track by $index">
         <td>{{ $index + 1}}</td>
-        <td>{{usuario.email}}</td>
-        <td>{{usuario.password}}</td>
-        <td> Eliminar Modificar</td>
+        <td>
+            <span data-ng-hide="editMode">{{usuario.email}}</span>
+            <input type="text" data-ng-show="editMode" data-ng-model="usuario.email" data-ng-required />
+        </td>
+        <td>
+            <span data-ng-hide="editMode">{{usuario.password}}</span>
+            <input type="text" data-ng-show="editMode" data-ng-model="usuario.password" data-ng-required />
+        </td>
+        <td>
+            <input type="button" value="Editar" data-ng-hide="editMode" data-ng-click="editMode = true; edit(usuario)" class="btn btn-default"/>
+            <input type="button" value="Guardar" data-ng-show="editMode" data-ng-click="editMode = false; saveField($index,usuario)" class="btn btn-default"/>
+            <input type="button" value="Cancelar" data-ng-show="editMode" data-ng-click="editMode = false; cancel()" class="btn btn-default"/>
+            <input type="button" value="Eliminar" class="btn btn-primary" ng-click="delete($index,usuario.id)"/>
+        </td>
     </tr>
     </tbody>
 </table>

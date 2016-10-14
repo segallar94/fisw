@@ -87,6 +87,49 @@ app.get('/users-list', isLoggedIn, needsGroup(1) , function(req, res) {
     res.render('users-list.ejs', {user:req.user});
 });
 
+app.put('/users/:id', function(req,res,next){
+    try{
+        models.Usuario.findOne({ where: {id:req.params.id} }).then(function (user) {
+            if(req.body.email){
+                if(req.body.password) {
+                    user.updateAttributes({
+                        email: req.body.email,
+                        password: req.body.password
+                    }).then(function (result) {
+                        res.json(result);
+                    })
+                }
+                else {
+                    user.updateAttributes({
+                        email: req.body.email
+                    }).then(function (result) {
+                        res.json(result);
+                    })
+                }
+
+            }
+        });
+    }
+    catch(ex){
+        console.error("Internal error:"+ex);
+        return next(ex);
+    }
+});
+
+app.delete('/users/:id', function(req,res,next){
+    try{
+        models.Usuario.destroy({where: {id: req.params.id} }).then(function () {
+            return models.Usuario.findAll({where: {admin: 0}}).then(function (user) {
+                res.json(user);
+            })
+        })
+    }
+    catch(ex){
+        console.error("Internal error:"+ex);
+        return next(ex);
+    }
+});
+
 function isLoggedIn(req, res, next) {
 
     // if user is authenticated in the session, carry on
