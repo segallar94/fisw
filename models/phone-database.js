@@ -2,7 +2,7 @@
 
 module.exports = function(sequelize, Datatypes){
     var ListaNumeros = sequelize.define("ListaNumeros", {
-        Intentos: Datatypes.INTEGER
+        Nombre: Datatypes.STRING
     }, {
         classMethods: {
             associate: function (models) {

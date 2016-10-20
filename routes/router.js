@@ -1,7 +1,18 @@
 var models  = require('../models');
 var express = require('express');
+var multer  =   require('multer');
 var passport = require('passport');
 var app= express();
+
+var storage =   multer.diskStorage({
+    destination: function (req, file, callback) {
+        callback(null, './uploads');
+    },
+    filename: function (req, file, callback) {
+        callback(null, file.fieldname + '-' + Date.now());
+    }
+});
+var upload = multer({ storage : storage}).single('Phones');
 
 var needsGroup = function(admin) {
     return function(req, res, next) {
@@ -87,7 +98,7 @@ app.get('/users-list', isLoggedIn, needsGroup(1) , function(req, res) {
     res.render('users-list.ejs', {user:req.user});
 });
 
-app.put('/users/:id', function(req,res,next){
+app.put('/users/:id', isLoggedIn, needsGroup(1), function(req,res,next){
     try{
         models.Usuario.findOne({ where: {id:req.params.id} }).then(function (user) {
             if(req.body.email){
@@ -116,7 +127,7 @@ app.put('/users/:id', function(req,res,next){
     }
 });
 
-app.delete('/users/:id', function(req,res,next){
+app.delete('/users/:id', isLoggedIn, needsGroup(1),function(req,res,next){
     try{
         models.Usuario.destroy({where: {id: req.params.id} }).then(function () {
             return models.Usuario.findAll({where: {admin: 0}}).then(function (user) {
@@ -128,6 +139,24 @@ app.delete('/users/:id', function(req,res,next){
         console.error("Internal error:"+ex);
         return next(ex);
     }
+});
+
+app.get('/files', isLoggedIn, needsGroup(1),function(req,res){
+    res.sendFile(__dirname + "/files");
+});
+
+app.get('/upload', isLoggedIn, needsGroup(1),function(req,res){
+    res.render('upload.ejs');
+});
+
+app.post('/api/phones', isLoggedIn, needsGroup(1) ,function(req,res){
+    upload(req,res,function(err) {
+        if(err) {
+            console.log(err);
+            return res.end("error uploading file");
+        }
+        res.end("File is uploaded");
+    });
 });
 
 function isLoggedIn(req, res, next) {
