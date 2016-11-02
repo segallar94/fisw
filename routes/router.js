@@ -3,6 +3,7 @@ var express = require('express');
 var multer  =   require('multer');
 var passport = require('passport');
 var app= express();
+var fs = require('fs');
 
 var storage =   multer.diskStorage({
     destination: function (req, file, callback) {
@@ -12,20 +13,46 @@ var storage =   multer.diskStorage({
         callback(null, file.fieldname + '-' + Date.now());
     }
 });
-var upload = multer({ storage : storage}).single('Phones');
+
+var upload = multer({ storage : storage,
+    fileFilter: function (req,file,cb) {
+        if (!file) {
+            req.flash('message', 'No file selected. Try again.');
+            return cb (null, false, new Error('No file uploaded. Try again.'));
+        }
+        else {
+            models.ListaNumeros.findAll({where: {Nombre: file.originalname}}).then(function (data) {
+                if (data.length == 0) {
+                    models.ListaNumeros.create({
+                        Nombre: file.originalname
+                    }).then(function (result) {
+                        req.flash('message', 'File has been successfully uploaded.');
+                        return cb (null, true);
+
+                    });
+                }
+                else {
+                    req.flash('message', 'There is already a file with that name');
+                    return cb (null, false, new Error('There is already a file with that name'));
+                }
+            });
+        }
+    }}).single('Phones');
 
 var needsGroup = function(admin) {
     return function(req, res, next) {
         if (req.user && req.user.admin === admin)
             next();
-        else
-            res.send(401, 'Unauthorized');
+        else{
+            req.flash('message', 'Unauthorized');
+            res.redirect('/');
+        }
     };
 };
 
 /* GET home page. */
 app.get('/', function(req, res, next) {
-  res.render('index.ejs', { title: 'Fsociety' });
+  res.render('index.ejs', { title: 'Fsociety', message: req.flash('message')});
 });
 
 app.get('/login', function(req, res) {
@@ -67,7 +94,7 @@ app.get('/profile', isLoggedIn, needsGroup(0) , function(req, res) {
 });
 
 app.get('/profile-admin', isLoggedIn, needsGroup(1) , function(req, res) {
-    res.render('profile-admin.ejs', {user:req.user});
+    res.render('profile-admin.ejs', {user:req.user, message:req.flash('message')});
 });
 
 app.get('/logout', function(req, res) {
@@ -78,16 +105,9 @@ app.get('/logout', function(req, res) {
 //GET usuarios
 app.get('/users', isLoggedIn, needsGroup(1), function(req, res, next) {
     try {
-        /*var query = url.parse(req.url,true).query;
-         console.log(query);*/
         models.Usuario.findAll({where: {admin: 0}}).then(function (user) {
-            //for(var x=0;x<user.length;x++){
-            //console.log(user[x].username);
-            //res.render('VerUsuario.html', {title: 'Listar Usuarios', resultado: user});
             res.json(user);
-            //}
         });
-        //res.render('VerUsuario.html', {title: 'Listar Usuarios'});
     } catch (ex) {
         console.error("Internal error:" + ex);
         return next(ex);
@@ -142,20 +162,32 @@ app.delete('/users/:id', isLoggedIn, needsGroup(1),function(req,res,next){
 });
 
 app.get('/files', isLoggedIn, needsGroup(1),function(req,res){
-    res.sendFile(__dirname + "/files");
+    console.log(req.file);
 });
 
 app.get('/upload', isLoggedIn, needsGroup(1),function(req,res){
     res.render('upload.ejs');
 });
 
-app.post('/api/phones', isLoggedIn, needsGroup(1) ,function(req,res){
-    upload(req,res,function(err) {
-        if(err) {
+app.post('/api/phones', isLoggedIn, needsGroup(1) ,function(req,res) {
+    upload(req, res, function (err) {
+        if (err) {
             console.log(err);
-            return res.end("error uploading file");
+            req.flash('message', 'Error uploading file.');
         }
-        res.end("File is uploaded");
+        if(!req.file && req.flash('message').length==0)
+            req.flash('message', 'No file selected. Try again.');
+        else{
+            if(req.file){
+                models.ListaNumeros.findAll({where: {Nombre: req.file.originalname}}).then(function (data) {
+                    if(data.length == 0)
+                        req.flash('message', 'File has been successfully uploaded.');
+                });
+            }
+            else
+                req.flash('message', 'There is already a file with that name');
+        }
+        res.redirect("/profile-admin");
     });
 });
 

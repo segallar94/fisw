@@ -12,6 +12,9 @@
 <div class="container">
 
   <div class="jumbotron text-center">
+      <% if (message.length > 0) { %>
+      <div class="alert alert-danger"><%= message %></div>
+      <% } %>
     <h1><span class="fa fa-lock"></span> Node Authentication</h1>
 
     <p>Entrar como:</p>
