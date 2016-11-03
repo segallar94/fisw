@@ -21,7 +21,8 @@ var upload = multer({ storage : storage,
             return cb (null, false, new Error('No file uploaded. Try again.'));
         }
         else {
-            models.ListaNumeros.findAll({where: {Nombre: file.originalname}}).then(function (data) {
+            models.ListaNumeros.findAll({attributes: ['id', 'Nombre'],
+                where: {Nombre: file.originalname}}).then(function (data) {
                 if (data.length == 0) {
                     models.ListaNumeros.create({
                         Nombre: file.originalname
@@ -179,7 +180,8 @@ app.post('/api/phones', isLoggedIn, needsGroup(1) ,function(req,res) {
             req.flash('message', 'No file selected. Try again.');
         else{
             if(req.file){
-                models.ListaNumeros.findAll({where: {Nombre: req.file.originalname}}).then(function (data) {
+                models.ListaNumeros.findAll({attributes: ['id', 'Nombre'],
+                    where: {Nombre: req.file.originalname}}).then(function (data) {
                     if(data.length == 0)
                         req.flash('message', 'File has been successfully uploaded.');
                 });
