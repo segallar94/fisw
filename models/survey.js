@@ -9,11 +9,12 @@ module.exports = function(sequelize, Datatypes){
                 Encuesta.belongsTo(models.Proyecto, {
                     onDelete: "CASCADE",
                     foreignKey: {
-                        allowNull: false
+                        allowNull: true
                     }
                 });
 //                Encuesta.hasMany(models.ListaNumeros);
                 Encuesta.hasMany(models.Llamada);
+                Encuesta.hasOne(models.ListaNumeros);
             }
         }
     });

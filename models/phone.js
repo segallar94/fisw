@@ -10,7 +10,12 @@ module.exports = function(sequelize, Datatypes){
         classMethods: {
             associate: function (models) {
                 Numero.hasMany(models.Llamada);
-     //           Numero.hasMany(models.ListaNumeros);
+                Numero.belongsTo(models.ListaNumeros, {
+                    onDelete: "CASCADE",
+                    foreignKey: {
+                        allowNull: false
+                    }
+                });
             }
         }
     });

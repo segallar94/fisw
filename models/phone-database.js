@@ -8,13 +8,14 @@ module.exports = function(sequelize, Datatypes){
     }, {
         classMethods: {
             associate: function (models) {
-                ListaNumeros.belongsTo(models.Numero, {
+                ListaNumeros.hasMany(models.Numero);
+                ListaNumeros.belongsTo(models.Encuesta, {
                     onDelete: "CASCADE",
                     foreignKey: {
                         allowNull: true
                     }
                 });
-                ListaNumeros.belongsTo(models.Encuesta, {
+                ListaNumeros.belongsTo(models.Proyecto, {
                     onDelete: "CASCADE",
                     foreignKey: {
                         allowNull: true
