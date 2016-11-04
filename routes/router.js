@@ -94,6 +94,10 @@ app.get('/profile', isLoggedIn, needsGroup(0) , function(req, res) {
     res.render('profile.ejs', {user:req.user});
 });
 
+app.get('/call', isLoggedIn, needsGroup(0) , function(req, res) {
+    res.render('call.ejs', {user:req.user});
+});
+
 app.get('/profile-admin', isLoggedIn, needsGroup(1) , function(req, res) {
     res.render('profile-admin.ejs', {user:req.user, message:req.flash('message')});
 });

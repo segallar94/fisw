@@ -9,12 +9,6 @@ module.exports = function(sequelize, Datatypes){
         classMethods: {
             associate: function (models) {
                 ListaNumeros.hasMany(models.Numero);
-                ListaNumeros.belongsTo(models.Encuesta, {
-                    onDelete: "CASCADE",
-                    foreignKey: {
-                        allowNull: true
-                    }
-                });
                 ListaNumeros.belongsTo(models.Proyecto, {
                     onDelete: "CASCADE",
                     foreignKey: {

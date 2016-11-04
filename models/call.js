@@ -14,12 +14,6 @@ module.exports = function(sequelize, Datatypes){
                         allowNull: false
                     }
                 });
-                Llamada.belongsTo(models.Encuesta, {
-                    onDelete: "CASCADE",
-                    foreignKey: {
-                        allowNull: false
-                    }
-                });
                 Llamada.belongsTo(models.Numero, {
                     onDelete: "CASCADE",
                     foreignKey: {
