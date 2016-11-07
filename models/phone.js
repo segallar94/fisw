@@ -2,7 +2,7 @@
 
 module.exports = function(sequelize, Datatypes){
     var Numero = sequelize.define("Numero", {
-        Telefono: Datatypes.INTEGER,
+        Telefono: {type: Datatypes.STRING, primaryKey: true},
         Nombre: Datatypes.STRING,
         Intentos: Datatypes.INTEGER,
         Estado: Datatypes.STRING
@@ -12,9 +12,7 @@ module.exports = function(sequelize, Datatypes){
                 Numero.hasMany(models.Llamada);
                 Numero.belongsTo(models.ListaNumeros, {
                     onDelete: "CASCADE",
-                    foreignKey: {
-                        allowNull: false
-                    }
+                    foreignKey: "ListaNumeros_id"
                 });
             }
         }

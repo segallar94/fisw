@@ -4,13 +4,16 @@ var multer  =   require('multer');
 var passport = require('passport');
 var app= express();
 var fs = require('fs');
+var csvParse = require('csv-parse');
+var through2 = require('through2');
+var csv2 = require('csv2');
 
 var storage =   multer.diskStorage({
     destination: function (req, file, callback) {
         callback(null, './uploads');
     },
     filename: function (req, file, callback) {
-        callback(null, file.fieldname + '-' + Date.now());
+        callback(null, file.originalname);
     }
 });
 
@@ -39,6 +42,42 @@ var upload = multer({ storage : storage,
             });
         }
     }}).single('Phones');
+
+var getNumbers = function (file,id) {
+    var all = [];
+
+    fs.createReadStream(file)
+        .pipe(csvParse({ delimiter: ','}))
+        .pipe(through2.obj(function (chunk, enc, callback) {
+            var data = {
+                Nombre: chunk[0] + ' ' + chunk[1],
+                Telefono: chunk[2],
+                Estado: chunk[3],
+                Intentos: 0,
+                ListaNumeros_id: id
+            };
+            models.Numero.create({
+                Nombre: chunk[0] + ' ' + chunk[1],
+                Telefono: chunk[2],
+                Estado: chunk[3],
+                Intentos: 0,
+                ListaNumeros_id: id
+            }).then(function(){
+                //console.log("Agregado correctamente");
+                }
+            );
+            //console.log(data.phone)
+            this.push(data);
+            callback()
+        }))
+        .on('data', function (data) {
+            all.push(data);
+            //console.log(all[0].name)
+        })
+        .on('end', function () {
+            //doSomethingSpecial(all)
+        })
+};
 
 var needsGroup = function(admin) {
     return function(req, res, next) {
@@ -119,6 +158,25 @@ app.get('/users', isLoggedIn, needsGroup(1), function(req, res, next) {
     }
 });
 
+//POST crear usuario por angular
+app.post('/users', isLoggedIn, needsGroup(1), function(req,res,next){
+    try{
+        var resultado=[];
+        models.Usuario.create({
+            password: req.body.password,
+            email: req.body.email,
+            admin: 0
+        }).then(function (user) {
+            resultado.push(user);
+            res.json(resultado);
+        });
+    }
+    catch(ex){
+        console.error("Internal error:"+ex);
+        return next(ex);
+    }
+});
+
 app.get('/users-list', isLoggedIn, needsGroup(1) , function(req, res) {
     res.render('users-list.ejs', {user:req.user});
 });
@@ -167,7 +225,20 @@ app.delete('/users/:id', isLoggedIn, needsGroup(1),function(req,res,next){
 });
 
 app.get('/files', isLoggedIn, needsGroup(1),function(req,res){
-    console.log(req.file);
+   /* fs.readdir('./uploads', function(err, files) {
+        if (err) return;
+        files.forEach(function(f) {
+            console.log('Files: ' + f);
+        });
+    }); */
+    try {
+        models.ListaNumeros.findAll({attributes: ['id', 'Nombre']}).then(function (files) {
+            res.json(files);
+        });
+    } catch (ex) {
+        console.error("Internal error:" + ex);
+        return next(ex);
+    }
 });
 
 app.get('/upload', isLoggedIn, needsGroup(1),function(req,res){
@@ -188,6 +259,7 @@ app.post('/api/phones', isLoggedIn, needsGroup(1) ,function(req,res) {
                     where: {Nombre: req.file.originalname}}).then(function (data) {
                     if(data.length == 0)
                         req.flash('message', 'File has been successfully uploaded.');
+                    getNumbers('./uploads/' + req.file.originalname, data[0].id);
                 });
             }
             else
@@ -196,6 +268,29 @@ app.post('/api/phones', isLoggedIn, needsGroup(1) ,function(req,res) {
         res.redirect("/profile-admin");
     });
 });
+
+app.get('/create-project', isLoggedIn, needsGroup(1), function(req, res) {
+    // render the page and pass in any flash data if it exists
+    res.render('create-project.ejs', { files: req.files});
+});
+
+app.post('/create-project', isLoggedIn, needsGroup(1), function (req,res,next) {
+    try{
+        var resultado=req.body.selected; //por resolver cómo recuperar listas seleccionadas para el proyecto
+        console.log(resultado);
+        models.Proyecto.create({
+            Nombre: req.body.Nombre,
+            Descripcion: req.body.Descripcion
+        }).then(function () {
+            console.log("proyecto creado con exito");
+            res.redirect('/profile-admin');
+        });
+    }
+    catch(ex){
+        console.error("Internal error:"+ex);
+        return next(ex);
+    }
+})
 
 function isLoggedIn(req, res, next) {
 

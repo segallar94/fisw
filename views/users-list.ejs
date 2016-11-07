@@ -49,6 +49,18 @@
                         }
                     };
 
+                    $scope.addRow = function () {
+                        $add = {'email': $scope.email, 'password': $scope.password};
+                        $http.post('http://localhost:8080/users', $add)
+                                .success(function () {
+                                    $scope.users.push($add);
+                                })
+                                .error(function (err) {
+                                })
+                        $scope.email = '';
+                        $scope.password = '';
+                    }
+
                     $scope.cancel = function(index) {
                         if ($scope.editing !== false) {
                             $scope.users[$scope.editing] = $scope.newField;
@@ -94,6 +106,31 @@
     </tbody>
 </table>
 
+<!-- Por implementar para la próxima entrega, ya que no restringe que dos usuarios tengan el mismo nombre
+<center><h3>Crear Usuario</h3></center>
+<form class="form-horizontal" role="form" ng-submit="addRow()">
+    <div class="form-group">
+        <label class="col-md-2 control-label">Email</label>
+        <div class="col-md-4">
+            <input type="text" class="form-control" name="email"
+                   ng-model="email" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-md-2 control-label">Password</label>
+        <div class="col-md-4">
+            <input type="text" class="form-control" name="password"
+                   ng-model="password" />
+        </div>
+    </div>
+    <div class="form-group">
+        <div style="padding-left:110px">
+            <input type="submit" value="Crear" class="btn btn-primary"/>
+        </div>
+    </div>
+</form>
+
+-->
 <div class="jumbotron text-center">
     <p>Or go <a href="/profile-admin">back</a>.</p>
 </div>
