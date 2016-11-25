@@ -1,7 +1,7 @@
 <!doctype html>
 <html>
 <head>
-  <title>Node Authentication</title>
+  <title>C A T I</title>
   <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css"> <!-- load bootstrap css -->
   <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css"> <!-- load fontawesome -->
   <style>
@@ -12,12 +12,15 @@
 <div class="container">
 
   <div class="jumbotron text-center">
+      <% if (message.length > 0) { %>
+      <div class="alert alert-danger"><%= message %></div>
+      <% } %>
     <h1><span class="fa fa-lock"></span> Node Authentication</h1>
 
-    <p>Login or Register with:</p>
+    <p>Entrar como:</p>
 
-    <a href="/login" class="btn btn-default"><span class="fa fa-user"></span> Local Login</a>
-    <a href="signup" class="btn btn-default"><span class="fa fa-user"></span> Local Signup</a>
+    <a href="/login" class="btn btn-default"><span class="fa fa-user"></span> Encuestador</a>
+    <a href="/login-admin" class="btn btn-default"><span class="fa fa-user"></span> Administrador</a>
   </div>
 
 </div>

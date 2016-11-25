@@ -1,0 +1,34 @@
+<!doctype html>
+<html>
+<head>
+    <title>Node Authentication</title>
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css">
+    <style>
+        body        { padding-top:80px; word-wrap:break-word; }
+    </style>
+</head>
+<body>
+<div class="container">
+
+    <div class="page-header text-center">
+        <h1><span class="fa fa-anchor"></span> Profile Page</h1>
+        <a href="/profile" class="btn btn-default btn-sm">Back</a>
+    </div>
+
+    <script type="text/javascript" src="http://www.skypeassets.com/i/scom/js/skype-uri.js"></script>
+    <div id="call_32" style="width:20%;background-color:#0094ff">
+        <script type="text/javascript">
+            Skype.ui({
+                name: "call",
+                element: "call_32",
+                participants: ["+56966901982"],
+                imageSize: 32,
+                imageColor: "white"
+            });
+        </script>
+    </div>
+
+</div>
+</body>
+</html>

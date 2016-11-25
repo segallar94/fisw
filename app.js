@@ -13,7 +13,6 @@ var session = require('express-session');
 
 
 var routes = require('./routes/router');
-var users = require('./routes/users');
 
 var app = express();
 

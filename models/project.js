@@ -3,19 +3,15 @@
 module.exports = function(sequelize, DataTypes){
     var Proyecto;
     Proyecto = sequelize.define("Proyecto", {
-        NombreProyecto: DataTypes.STRING
+        Nombre: DataTypes.STRING,
+        Descripcion: DataTypes.STRING,
+        URL: DataTypes.STRING
     }, {
         classMethods: {
             associate: function (models) {
-                Proyecto.hasMany(models.Encuesta);
-                Proyecto.belongsTo(models.Usuario, {
-                    onDelete: "CASCADE",
-                    foreignKey: {
-                        allowNull: false
-                    }
-                });
+                Proyecto.hasMany(models.ListaNumeros);
             }
         }
     });
     return Proyecto;
-}
+};

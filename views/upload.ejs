@@ -1,0 +1,29 @@
+<!doctype html>
+<html>
+<head>
+    <title>Subir lista de números </title>
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css">
+    <style>
+        body        { padding-top:80px; word-wrap:break-word; }
+    </style>
+</head>
+<body>
+<center>
+<div class="container">
+    <form id        =  "uploadForm"
+          enctype   =  "multipart/form-data"
+          action    =  "/api/phones"
+          method    =  "POST"
+    >
+        <input type="file" name="Phones" />
+        <input type="submit" value="Upload Data" name="submit">
+    </form>
+</div>
+
+<div class="container">
+    <p>Or go <a href="/profile-admin">back</a>.</p>
+</div>
+</center>
+</body>
+</html>

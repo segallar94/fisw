@@ -10,6 +10,7 @@ var opts = {
         dialect: "mysql",
         freezeTableName: true,
         defaultPrimaryKey: false,
+        timestamps: false
     }
 }
 var sequelize = new Sequelize('fisw', 'root', 'root',opts);
