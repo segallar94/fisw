@@ -7,13 +7,21 @@
     <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
     <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.0-beta.1/angular.min.js"></script>
     <script type="text/javascript" src="https://secure.skypeassets.com/i/scom/js/skype-uri.js"></script>
-
+    <script type="text/javascript">
+        var paramstr = location.search.substr(1);
+        var paramarr = paramstr.split ("&");
+        console.log(paramstr);
+        var params = {};
+        var id;
+        var tmparr = paramarr[0].split("=");
+        id = tmparr[1];
+    </script>
     <script>
         angular.module('myphone', [])
                 .config(['$compileProvider',function($compileProvider){
                     $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|ftp|mailto|file|skype):/);
                 }])
-                .controller('phonecontroller', ['$scope', '$http', function ($scope,$http){
+                .controller('phonecontroller', ['$scope', '$http', '$sce', '$timeout', function ($scope,$http,$sce,$timeout){
                     /*$scope.data = {
                      singleSelect: null,
                      multipleSelect: [],
@@ -22,9 +30,17 @@
                     $scope.newField = {};
                     $scope.editing = false;
                     $scope.title="Listar numeros";
-                    $http.get("http://localhost:8080/phones", {cache: false})
+                    $http.get("http://localhost:8080/projects/"+id, {cache: false})
                             .success(function (data) {
                                 $scope.phones=data;
+                            })
+                            .error(function (err) {
+                            })
+
+                    $http.get("http://localhost:8080/proyects/"+id, {cache: false})
+                            .success(function (data) {
+                                $scope.projects = data;
+                                $scope.projects.URL = $sce.trustAsResourceUrl($scope.projects.URL);
                             })
                             .error(function (err) {
                             })
@@ -63,80 +79,11 @@
                             $scope.editing = false;
                         }
                     };
+                    $timeout(function () { console.log(window.frames.foo); }, 1000);
                 }]);
-        /*angular.module("myapp",[])
-         .controller("mycontroller",function ($scope,$http) {
-         $scope.newField = {};
-         $scope.editing = false;
-         $scope.title="Listar Usuario";
 
-         $http.get("http://localhost:8080/users", {cache: false})
-         .success(function (data) {
-         $scope.users=data;
-         })
-         .error(function (err) {
-         })
-
-         $scope.delete = function ($index,id) {
-         $scope.users.splice($index, 1 );
-         $http.delete("http://localhost:8080/users/" + id)
-         .success(function (data) {
-         $scope.users=data;
-         })
-         .error(function (err) {
-         })
-         }
-
-         $scope.edit = function(field) {
-         $scope.editing = $scope.users.indexOf(field);
-         $scope.newField = angular.copy(field);
-         }
-
-         $scope.saveField = function($index,field) {
-         if ($scope.editing !== false) {
-         $scope.users[$scope.editing] = $scope.newField;
-         $scope.editing = false;
-         $http.put("http://localhost:8080/users/" + field.id, field)
-         .success(function (data){
-         $scope.users[$index] = data;
-         })
-         .error(function (err) {
-         })
-         }
-         };
-
-         $scope.addRow = function () {
-         $add = {'email': $scope.email, 'password': $scope.password};
-         $http.post('http://localhost:8080/users', $add)
-         .success(function () {
-         $scope.users.push($add);
-         })
-         .error(function (err) {
-         })
-         $scope.email = '';
-         $scope.password = '';
-         }
-
-         $scope.cancel = function(index) {
-         if ($scope.editing !== false) {
-         $scope.users[$scope.editing] = $scope.newField;
-         $scope.editing = false;
-         }
-         };
-         });*/
-        /*angular.module('defaultValueSelect', [])
-         .controller('ExampleController', ['$scope', function($scope) {
-         $scope.data = {
-         availableOptions: [
-         {id: '1', name: 'Option A'},
-         {id: '2', name: 'Option B'},
-         {id: '3', name: 'Option C'}
-         ],
-         selectedOption: {id: '3', name: 'Option C'} //This sets the default value of the select in the ui
-         };
-         }]);*/
     </script>
-    <title>Node Authentication</title>
+    <title>Realizar llamada</title>
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css">
     <style>
@@ -154,65 +101,50 @@
 <table class="table">
     <thead>
     <tr>
-        <th> # </th>
+        <th> Nombre </th>
         <th> Numero </th>
-        <th> Estado </th>
+        <th> </th>
         <th> Acciones </th>
     </tr>
     </thead>
     <tbody>
     <!--<tr ng-repeat="numero in phones track by $index">-->
     <div>
-        <td>{{ $index + 1}}</td>
         <td>
-            <span data-ng-hide="editMode">{{phones[4].Telefono}}</span>
-            <input type="text" data-ng-show="editMode" data-ng-model="numero.Telefono" data-ng-required />
+            <spans>{{phones[0].Nombre}}</spans>
         </td>
         <td>
-            <span data-ng-hide="editMode">{{phones[4].Estado}}</span>
-            <input type="text" data-ng-show="editMode" data-ng-model="numero.Estado" data-ng-required />
+            <spans>{{phones[0].Telefono}}</spans>
+        </td>
+        <td>
+            <!--<span data-ng-hide="editMode">{{phones[0].Estado}}</span>-->
+            <form name="myForm">
+                <select name="singleSelect" data-ng-show="editMode" data-ng-model="phones[0].Estado">
+                    <option data-ng-required="si">No contesto</option>
+                    <option data-ng-required="no">Numero equivocado</option>
+                    <option data-ng-required="no">Llamada Realizada</option>
+                </select><br>
+            </form>
         </td>
         <td>
             <input type="button" value="Editar" data-ng-hide="editMode" data-ng-click="editMode = true; edit(phones[0])" class="btn btn-default"/>
             <input type="button" value="Guardar" data-ng-show="editMode" data-ng-click="editMode = false; saveField($index,phones[0])" class="btn btn-default"/>
-            <input type="button" value="Cancelar" data-ng-show="editMode" data-ng-click="editMode = false; cancel()" class="btn btn-default"/>
+            <a href="call?id={{projects.id}}" class="btn btn-default">Siguiente</a>
         </td>
     </div>
     </tbody>
 </table>
-<div id="SkypeButton_Call_luiss_1">
+    <div id="SkypeButton_Call_luiss_1">
     <script type="text/javascript">
         Skype.ui({
             "name": "call",
             "element": "SkypeButton_Call_luiss_1",
-            "participants": [ "+" + "{{phones[4].Telefono}}"],
+            "participants": [ "+" + "{{phones[0].Telefono}}"],
             "imageSize": 24
         });
     </script>
 </div>
-<center><iframe src="https://es.surveymonkey.com/r/2PLKT5K" width="800" height="600"> </iframe></center>
-<center>
-    <!--<div ng-controller="ExampleController">
-        <form name="myForm">
-            <label for="mySelect">Make a choice:</label>
-            <select name="mySelect" id="mySelect"
-                    ng-options="option.name for option in data.availableOptions track by option.id"
-                    ng-model="data.selectedOption"></select>
-        </form>
-        <hr>
-        <tt>option = {{data.selectedOption}}</tt><br/>-->
-    <div ng-controller="ExampleController">
-        <form name="myForm">
-            <label for="singleSelect"> Single select: </label><br>
-            <select name="singleSelect" ng-model="data.singleSelect">
-                <option value="option-1">No contesto</option>
-                <option value="option-2">Numero equivocado</option>
-                <option value="option-3">Llamada Realizada</option>
-            </select><br>
-        </form>
-        <!--<input type="button" value="Editar" data-ng-hide="editMode" data-ng-click="editMode = true; edit(usuario)" class="btn btn-default"/>
-        <input type="button" value="Eliminar" class="btn btn-primary" ng-click="delete($index,usuario.id)"/>-->
-    </div>
+<center><iframe width="800" height="600" ng-src= "{{projects.URL}}"></iframe>
 </center>
 </body>
 </html>

@@ -1,44 +1,65 @@
 <!doctype html>
-<html ng-app="listprojects">
+<html ng-app= "myproyect">
 <head>
     <title>Node Authentication</title>
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css">
-    <style>
-        body        { padding-top:80px; word-wrap:break-word; }
-    </style>
+    <link rel="stylesheet"
+          href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
     <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
     <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.0-beta.1/angular.min.js"></script>
     <script>
-        angular.module("listprojects",[])
-                .controller("projectcontroller", function ($scope,$http) {
-                    $http.get("http://localhost:8080/files", {cache: false})
+        angular.module("myproyect",[])
+                .controller("proyectcontroller",function ($scope,$http) {
+                    $scope.newField = {};
+                    $scope.editing = true;
+                    $scope.title="Listar Proyectos";
+
+                    $http.get("http://localhost:8080/projects", {cache: false})
                             .success(function (data) {
-                                $scope.items=data;
+                                $scope.projects=data;
                             })
                             .error(function (err) {
                             })
 
-                    $scope.selected = [];
+                    /*$scope.edit = function(field) {
+                     $scope.editing = $scope.projects.indexOf(field);
+                     $scope.newField = angular.copy(field);
+                     }
 
-                    $scope.toggle = function (item, list) {
-                        var idx = list.indexOf(item);
-                        if (idx > -1) {
-                            list.splice(idx, 1);
-                        }
-                        else {
-                            list.push(item);
-                        }
-                    };
+                     $scope.saveField = function($index,field) {
 
-                    $scope.exists = function (item, list) {
-                        return list.indexOf(item) > -1;
-                    };
-                })
+                     $scope.projects[$scope.editing] = $scope.newField;
+
+                     $http.put("http://localhost:8080/proyects/" + field.id, field)
+                     .success(function (data){
+                     $scope.proyects[$index] = data;
+                     })
+                     .error(function (err) {
+                     })
+                     $http.get("http://localhost:8080/projects/" + field.id, field)
+                     .success(function (data){
+                     $scope.projects[$index] = data;
+                     })
+                     .error(function (err) {
+                     })
+
+                     };
+
+                     $scope.cancel = function(index) {
+                     if ($scope.editing !== false) {
+                     $scope.projects[$scope.editing] = $scope.newField;
+                     $scope.editing = false;
+                     }
+                     };*/
+                });
     </script>
+    <style>
+        body        { padding-top:80px; word-wrap:break-word; }
+    </style>
 </head>
-<body ng-controller="projectcontroller">
+<body ng-controller="proyectcontroller">
 <div class="container">
 
     <div class="page-header text-center">
@@ -64,10 +85,31 @@
 
     </div>
 
-    <div class="jumbotron text-center">
-        <a href="call" class="btn btn-default"><span class="fa fa-user"></span> Realizar llamada</a>
-    </div>
-
+    <table class="table">
+        <thead>
+        <tr>
+            <th> # </th>
+            <th> Proyecto </th>
+            <th> Descripcion </th>
+            <th> Encuestar</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr ng-repeat="proyecto in projects track by $index">
+            <td>{{ $index + 1}}</td>
+            <td>
+                <span>{{proyecto.Nombre}}</span>
+            </td>
+            <td>
+                <span>{{proyecto.Descripcion}}</span>
+            </td>
+            <td>
+                <a href="call?id={{proyecto.id}}" class="btn btn-default"><span class="fa fa-user"></span> Realizar llamada</a>
+                <!--<input href="call" type="button" value="Realizar llamada" data-ng-click="saveField($index,proyecto)" class="btn btn-default"/>-->
+            </td>
+        </tr>
+        </tbody>
+    </table>
 </div>
 </body>
 </html>

@@ -158,6 +158,18 @@ app.get('/users', isLoggedIn, needsGroup(1), function(req, res, next) {
     }
 });
 
+//GET proyectos
+app.get('/projects', isLoggedIn, needsGroup(0), function(req, res, next) {
+    try {
+        models.Proyecto.findAll().then(function (project) {
+            res.json(project);
+        });
+    } catch (ex) {
+        console.error("Internal error:" + ex);
+        return next(ex);
+    }
+});
+
 //POST crear usuario por angular
 app.post('/users', isLoggedIn, needsGroup(1), function(req,res,next){
     try{
@@ -288,7 +300,8 @@ app.post('/create-project', isLoggedIn, needsGroup(1), function (req,res,next) {
         var listas=JSON.parse(req.body.selected);
         models.Proyecto.create({
             Nombre: req.body.Nombre,
-            Descripcion: req.body.Descripcion
+            Descripcion: req.body.Descripcion,
+            URL: req.body.URL
         }).then(function (project) {
             for (i=0; i< listas.length; i++){
                 models.ListaNumeros.findOne({//attributes: ['id', 'Nombre','Proyecto_id'],
@@ -321,6 +334,59 @@ app.get('/phones', isLoggedIn, needsGroup(0), function(req, res, next) {
         });
     } catch (ex) {
         console.error("Internal error:" + ex);
+        return next(ex);
+    }
+});
+
+//Modificar estado de un numero especifico
+app.put('/phones/:Telefono', isLoggedIn, needsGroup(0), function(req,res,next){
+    try{
+        models.Numero.findOne({ where: {Telefono:req.params.Telefono} }).then(function (user) {
+            if(req.body.Telefono){
+                if(req.body.Estado) {
+                    user.updateAttributes({
+                        Estado: req.body.Estado
+                    }).then(function (result) {
+                        res.json(result);
+                    })
+                }
+            }
+        });
+    }
+    catch(ex){
+        console.error("Internal error:"+ex);
+        return next(ex);
+    }
+});
+
+//GET Numeros especificos
+app.get('/projects/:id', isLoggedIn, needsGroup(0), function(req,res,next) {
+    try {
+        models.ListaNumeros.findAll({ where: {ProyectoId:req.params.id}}).then(function (list) {
+            models.Numero.findAll({where: {Estado: "si",ListaNumeros_id:list[0].id}}).then(function (phone) {
+                console.log(phone);
+                res.json(phone);
+            })
+        });
+    }
+    catch(ex){
+        console.error("Internal error:"+ex);
+        return next(ex);
+    }
+});
+app.get('/call', isLoggedIn, needsGroup(0) , function(req, res) {
+    res.render('call.ejs',  {phone:req.phone});
+});
+//
+//
+app.get('/proyects/:id', isLoggedIn, needsGroup(0), function(req,res,next){
+    try{
+        models.Proyecto.findOne({ where: {id:req.params.id} }).then(function (project) {
+            res.json(project);
+        });
+    }
+    catch(ex){
+        console.error("Internal error:"+ex);
         return next(ex);
     }
 });
