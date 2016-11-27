@@ -246,6 +246,14 @@ app.get('/upload', isLoggedIn, needsGroup(1),function(req,res){
     res.render('upload.ejs');
 });
 
+app.get('/verListaArchivos', isLoggedIn, function (req,res){
+    fs.readdir('./files' + req.params.id,function(err,files){
+        if(err)
+            res.send('La carpeta no existe');
+        res.send(files);
+    })
+});
+
 app.post('/api/phones', isLoggedIn, needsGroup(1) ,function(req,res) {
     upload(req, res, function (err) {
         if (err) {
@@ -302,6 +310,23 @@ app.post('/create-project', isLoggedIn, needsGroup(1), function (req,res,next) {
         console.error("Internal error:"+ex);
         return next(ex);
     }
+});
+
+//GET numeros
+app.get('/phones', isLoggedIn, needsGroup(0), function(req, res, next) {
+    try {
+        models.Numero.findAll(/*{w
+        here: {Estado: "si"}}*/).then(function (phone) {
+            res.json(phone);
+        });
+    } catch (ex) {
+        console.error("Internal error:" + ex);
+        return next(ex);
+    }
+});
+
+app.get('/call', isLoggedIn, needsGroup(0) , function(req, res) {
+    res.render('call.ejs', {phone:req.phone});
 });
 
 function isLoggedIn(req, res, next) {
