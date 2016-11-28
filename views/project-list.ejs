@@ -1,0 +1,144 @@
+<!doctype html>
+<html ng-app= "myproj">
+<head>
+  <title>Listado de proyectos</title>
+    <link rel="stylesheet"
+          href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.0-beta.1/angular.min.js"></script>
+    <script>
+        angular.module("myproj",[])
+                .controller("projcontroller",function ($scope,$http) {
+                    $scope.newField = {};
+                    $scope.editing = false;
+                    $scope.title="Listar Proyecto";
+
+                    $http.get("http://localhost:8080/projects", {cache: false})
+                            .success(function (data) {
+                                $scope.projects=data;
+                            })
+                            .error(function (err) {
+                            })
+
+                    $scope.delete = function ($index,id) {
+                        $scope.projects.splice($index, 1 );
+                        $http.delete("http://localhost:8080/projects/" + id)
+                                .success(function (data) {
+                                    $scope.projects=data;
+                                })
+                                .error(function (err) {
+                                })
+                    }
+
+                    $scope.edit = function(field) {
+                        $scope.editing = $scope.projects.indexOf(field);
+                        $scope.newField = angular.copy(field);
+                    }
+
+                    $scope.saveField = function($index,field) {
+                        if ($scope.editing !== false) {
+                            $scope.projects[$scope.editing] = $scope.newField;
+                            $scope.editing = false;
+                            $http.put("http://localhost:8080/projects/" + field.id, field)
+                                    .success(function (data){
+                                        $scope.projects[$index] = data;
+                                    })
+                                    .error(function (err) {
+                                    })
+                        }
+                    };
+
+                    $scope.addRow = function () {
+                        $add = {'Nombre': $scope.Nombre, 'Descripcion': $scope.Descripcion,'URL': $scope.URL};
+                        $http.post('http://localhost:8080/projects', $add)
+                                .success(function () {
+                                    $scope.projectss.push($add);
+                                })
+                                .error(function (err) {
+                                })
+                        $scope.Nombre = '';
+                        $scope.Descripcion = '';
+                        $scope.URL = '';
+                    }
+
+                    $scope.cancel = function(index) {
+                        if ($scope.editing !== false) {
+                            $scope.projects[$scope.editing] = $scope.newField;
+                            $scope.editing = false;
+                        }
+                    };
+                });
+    </script>
+  <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css"> <!-- load bootstrap css -->
+  <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css"> <!-- load fontawesome -->
+  <style>
+    body        { padding-top:80px; }
+  </style>
+</head>
+<body ng-controller="projcontroller">
+<table class="table">
+    <thead>
+    <tr>
+        <th> # </th>
+        <th> Nombre </th>
+        <th> Descripcion </th>
+        <th> URL </th>
+        <th> Acciones </th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr ng-repeat="proyecto in projects track by $index">
+        <td>{{ $index + 1}}</td>
+        <td>
+            <span data-ng-hide="editMode">{{proyecto.Nombre}}</span>
+            <input type="text" data-ng-show="editMode" data-ng-model="proyecto.Nombre" data-ng-required />
+        </td>
+        <td>
+            <span data-ng-hide="editMode">{{proyecto.Descripcion}}</span>
+            <input type="text" data-ng-show="editMode" data-ng-model="proyecto.Descripcion" data-ng-required />
+        </td>
+        <td>
+            <span data-ng-hide="editMode">{{proyecto.URL}}</span>
+            <input type="text" data-ng-show="editMode" data-ng-model="proyecto.URL" data-ng-required />
+        </td>
+        <td>
+            <input type="button" value="Editar" data-ng-hide="editMode" data-ng-click="editMode = true; edit(proyecto)" class="btn btn-default"/>
+            <input type="button" value="Guardar" data-ng-show="editMode" data-ng-click="editMode = false; saveField($index,proyecto)" class="btn btn-default"/>
+            <input type="button" value="Cancelar" data-ng-show="editMode" data-ng-click="editMode = false; cancel()" class="btn btn-default"/>
+            <input type="button" value="Eliminar" class="btn btn-primary" ng-click="delete($index,proyecto.id)"/>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+<!-- Por implementar para la próxima entrega, ya que no restringe que dos usuarios tengan el mismo nombre
+<center><h3>Crear Usuario</h3></center>
+<form class="form-horizontal" role="form" ng-submit="addRow()">
+    <div class="form-group">
+        <label class="col-md-2 control-label">Email</label>
+        <div class="col-md-4">
+            <input type="text" class="form-control" name="email"
+                   ng-model="email" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-md-2 control-label">Password</label>
+        <div class="col-md-4">
+            <input type="text" class="form-control" name="password"
+                   ng-model="password" />
+        </div>
+    </div>
+    <div class="form-group">
+        <div style="padding-left:110px">
+            <input type="submit" value="Crear" class="btn btn-primary"/>
+        </div>
+    </div>
+</form>
+
+-->
+<div class="jumbotron text-center">
+    <p>Or go <a href="/profile-admin">back</a>.</p>
+</div>
+</body>
+</html>

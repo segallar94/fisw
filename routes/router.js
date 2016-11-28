@@ -159,7 +159,7 @@ app.get('/users', isLoggedIn, needsGroup(1), function(req, res, next) {
 });
 
 //GET proyectos
-app.get('/projects', isLoggedIn, needsGroup(0), function(req, res, next) {
+app.get('/projects', isLoggedIn , function(req, res, next) {
     try {
         models.Proyecto.findAll().then(function (project) {
             res.json(project);
@@ -392,6 +392,54 @@ app.get('/proyects/:id', isLoggedIn, needsGroup(0), function(req,res,next){
 
 app.get('/call', isLoggedIn, needsGroup(0) , function(req, res) {
     res.render('call.ejs', {phone:req.phone});
+});
+
+app.get('/project-list', isLoggedIn, needsGroup(1) , function(req, res) {
+    res.render('project-list.ejs');
+});
+
+app.put('/projects/:id', isLoggedIn, needsGroup(1), function(req,res,next){
+    try{
+        models.Proyecto.findOne({ where: {id:req.params.id} }).then(function (project) {
+            if(req.body.Nombre){
+                if(req.body.Descripcion) {
+                    project.updateAttributes({
+                        Nombre: req.body.Nombre,
+                        Descripcion: req.body.Descripcion,
+                        URL: req.body.URL
+                    }).then(function (result) {
+                        res.json(result);
+                    })
+                }
+                else {
+                    project.updateAttributes({
+                        Nombre: req.body.Descripcion
+                    }).then(function (result) {
+                        res.json(result);
+                    })
+                }
+
+            }
+        });
+    }
+    catch(ex){
+        console.error("Internal error:"+ex);
+        return next(ex);
+    }
+});
+
+app.delete('/projects/:id', isLoggedIn, needsGroup(1),function(req,res,next){
+    try{
+        models.Proyecto.destroy({where: {id: req.params.id} }).then(function () {
+            return models.Proyecto.findAll().then(function (project) {
+                res.json(project);
+            })
+        })
+    }
+    catch(ex){
+        console.error("Internal error:"+ex);
+        return next(ex);
+    }
 });
 
 function isLoggedIn(req, res, next) {
