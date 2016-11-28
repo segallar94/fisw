@@ -2,25 +2,57 @@
 <html>
 <head>
   <title>C A T I</title>
-  <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css"> <!-- load bootstrap css -->
-  <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css"> <!-- load fontawesome -->
+  <link rel="stylesheet" href="https://bootswatch.com/united/bootstrap.min.css">
+  <link rel="stylesheet" href="https://bootswatch.com/united/bootstrap.css">
+  <a class="ex1">
+    <img class="custom-left" src="http://inf.utfsm.cl/images/sitio/logo-usm.png">
+  </a>
+
+    <a class="ex1">
+        <img class="custom-right" src="http://www.industrias.usm.cl/wp-content/themes/usm-php/assets/img/industrias_&#10;&#9;&#9;&#9;&#9;usm.png" alt="" width="110">
+    </a>
   <style>
-    body        { padding-top:80px; }
+    body        { padding-top:30px; }
+    a.ex1 {
+      margin-left: 2cm;
+      margin-bottom: 1cm;
+    }
+    img.custom-left {
+        margin-bottom: 2cm;
+    }
+    img.custom-right{
+        margin-bottom: 2cm;
+        margin-left: 19cm;
+    }
+    h1{
+        margin-bottom: 2cm;
+    }
+    hr{
+        margin-bottom: 1cm;
+    }
+    div.jumbotron text-center{
+        margin-top: 3cm;
+        width: 50%;
+    }
   </style>
 </head>
-<body>
+<body style="background-color: #faffb0">
+
 <div class="container">
 
   <div class="jumbotron text-center">
       <% if (message.length > 0) { %>
-      <div class="alert alert-danger"><%= message %></div>
+      <div class="alert alert-dismissible alert-danger"><%= message %></div>
       <% } %>
-    <h1><span class="fa fa-lock"></span> Node Authentication</h1>
+    <h1><span class="fa-lock"></span> CATI</h1>
+      <h2> Sistema de encuestas y llamadas VoIP</h2>
+      <hr>
 
-    <p>Entrar como:</p>
 
-    <a href="/login" class="btn btn-default"><span class="fa fa-user"></span> Encuestador</a>
-    <a href="/login-admin" class="btn btn-default"><span class="fa fa-user"></span> Administrador</a>
+    <p>Ingresar como:</p>
+
+    <a href="/login" class="btn btn-primary btn-lg"><span class="fa fa-user"></span> Encuestador</a>
+    <a href="/login-admin" class="btn btn-primary btn-lg"><span class="fa fa-user"></span> Administrador</a>
   </div>
 
 </div>

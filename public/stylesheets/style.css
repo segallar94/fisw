@@ -31,3 +31,26 @@ a {
   border-style: solid;
   border-width: 1px;
   height: 100%; }
+.form-small .control-label {
+  width: 100px;
+}
+
+.form-small .controls {
+  margin-left: 120px;
+}
+
+.form-medium .control-label {
+  width: 180px;
+}
+
+.form-medium .controls {
+  margin-left: 200px;
+}
+
+.form-xlarge .control-label {
+  width: 240px;
+}
+
+.form-xlarge .controls {
+  margin-left: 260px;
+}
