@@ -364,7 +364,6 @@ app.get('/projects/:id', isLoggedIn, needsGroup(0), function(req,res,next) {
     try {
         models.ListaNumeros.findAll({ where: {ProyectoId:req.params.id}}).then(function (list) {
             models.Numero.findAll({where: {Estado: "si",ListaNumeros_id:list[0].id}}).then(function (phone) {
-                console.log(phone);
                 res.json(phone);
             })
         });
