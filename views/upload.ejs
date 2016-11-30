@@ -2,13 +2,23 @@
 <html>
 <head>
     <title>Subir lista de números </title>
-    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css">
-    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://bootswatch.com/united/bootstrap.min.css">
+    <link rel="stylesheet" href="https://bootswatch.com/united/bootstrap.css">
     <style>
         body        { padding-top:80px; word-wrap:break-word; }
+        div.container {
+            background-color: #caffbb;
+            padding-top: 50px;
+            padding-bottom: 50px;
+            width: 50%;
+            border-radius: 50px;
+        }
     </style>
 </head>
 <body style="background-color: #faffb0">
+<center>
+    <h1><span class="fa fa-sign-in"></span> Subir lista de números</h1>
+</center>
 <center>
 <div class="container">
     <form id        =  "uploadForm"
@@ -16,14 +26,13 @@
           action    =  "/api/phones"
           method    =  "POST"
     >
-        <input type="file" name="Phones" />
-        <input type="submit" value="Upload Data" name="submit">
+        <input class="btn btn-info" type="file" name="Phones" />
+        <input class="btn btn-success" type="submit" value="Upload Data" name="submit">
     </form>
 </div>
 
-<div class="container">
-    <p>Or go <a href="/profile-admin">back</a>.</p>
-</div>
+    <h3>Or go <a href="/profile-admin">back</a>.</h3>
+
 </center>
 </body>
 </html>

@@ -1,8 +1,8 @@
 <!doctype html>
 <html ng-app= "myphone">
 <head>
-    <link rel="stylesheet"
-          href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://bootswatch.com/united/bootstrap.min.css">
+    <link rel="stylesheet" href="https://bootswatch.com/united/bootstrap.css">
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
     <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
     <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.0-beta.1/angular.min.js"></script>
@@ -83,10 +83,26 @@
 
     </script>
     <title>Realizar llamada</title>
-    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css">
-    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css">
     <style>
         body        { padding-top:80px; word-wrap:break-word; }
+        fieldset{
+            background-color: #dbd3f5;
+            border-radius: 15px;
+            margin-left: 50px;
+            margin-right: 50px;
+        }
+        a.btn.btn-default.btn-sm{
+            color: #fffdfe;
+            background: #171519;
+        }
+        div.jumbotron{
+            width: 10%;
+            height: 5%;
+            margin-bottom: 10px;
+            margin-top: 10px;
+            padding-top: 0px;
+            padding-bottom: 0px;
+        }
     </style>
 </head>
 <body ng-controller="phonecontroller" style="background-color: #faffb0">
@@ -97,7 +113,8 @@
         <a href="/profile" class="btn btn-default btn-sm">Back</a>
     </div>
 </div>
-<table class="table">
+<fieldset>
+<table class="table table-striped table-hover ">
     <thead>
     <tr>
         <th> Nombre </th>
@@ -126,13 +143,17 @@
             </form>
         </td>
         <td>
-            <input type="button" value="Editar" data-ng-hide="editMode" data-ng-click="editMode = true; edit(phones[0])" class="btn btn-default"/>
-            <input type="button" value="Guardar" data-ng-show="editMode" data-ng-click="editMode = false; saveField($index,phones[0])" class="btn btn-default"/>
-            <a href="call?id={{projects.id}}" class="btn btn-default">Siguiente</a>
+            <input type="button" value="Editar" data-ng-hide="editMode" data-ng-click="editMode = true; edit(phones[0])" class="btn btn-primary"/>
+            <input type="button" value="Guardar" data-ng-show="editMode" data-ng-click="editMode = false; saveField($index,phones[0])" class="btn btn-primary"/>
+            <a href="call?id={{projects.id}}" class="btn btn-warning">Siguiente</a>
         </td>
     </div>
     </tbody>
 </table>
+</fieldset>
+<center>
+<div class="jumbotron">
+        <center>
     <div id="SkypeButton_Call_luiss_1">
     <script type="text/javascript">
         Skype.ui({
@@ -142,7 +163,8 @@
             "imageSize": 24
         });
     </script>
-</div>
+    </div>
+        </center></div></center>
 <center><iframe width="800" height="600" ng-src= "{{projects.URL}}"></iframe>
 </center>
 </body>

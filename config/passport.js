@@ -54,7 +54,7 @@ module.exports = function(passport) {
                     if (err)
                         return done(err);
                     if (rows.length) {
-                        return done(null, false, req.flash('signupMessage', 'That username is already taken.'));
+                        return done(null, false, req.flash('signupMessage', 'Ya existe otro usuario con ese nombre.'));
                     } else {
                         var newUserMysql = new Object();
                         newUserMysql.email = email;

@@ -2,8 +2,8 @@
 <html ng-app= "myapp">
 <head>
   <title>Listado de encuestadores</title>
-    <link rel="stylesheet"
-          href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://bootswatch.com/united/bootstrap.min.css">
+    <link rel="stylesheet" href="https://bootswatch.com/united/bootstrap.css">
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
     <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
     <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.0-beta.1/angular.min.js"></script>
@@ -69,14 +69,23 @@
                     };
                 });
     </script>
-  <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css"> <!-- load bootstrap css -->
-  <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css"> <!-- load fontawesome -->
   <style>
     body        { padding-top:80px; }
+    fieldset{
+        background-color: #dbd3f5;
+        margin-left: 50px;
+        margin-right: 50px;
+        padding-bottom: 0px;
+        border-radius: 15px;
+    }
   </style>
 </head>
 <body ng-controller="mycontroller" style="background-color: #faffb0">
-<table class="table">
+<center>
+    <h1><span class="fa fa-sign-in"></span> Listado de encuestadores</h1>
+</center>
+<fieldset>
+<table class="table table-striped table-hover ">
     <thead>
     <tr>
         <th> # </th>
@@ -105,7 +114,7 @@
     </tr>
     </tbody>
 </table>
-
+</fieldset>
 <!-- Por implementar para la próxima entrega, ya que no restringe que dos usuarios tengan el mismo nombre
 <center><h3>Crear Usuario</h3></center>
 <form class="form-horizontal" role="form" ng-submit="addRow()">
@@ -131,8 +140,8 @@
 </form>
 
 -->
-<div class="jumbotron text-center">
-    <p>Or go <a href="/profile-admin">back</a>.</p>
-</div>
+<center>
+    <h4>Or go <a href="/profile-admin">back</a>.</h4>
+</center>
 </body>
 </html>
