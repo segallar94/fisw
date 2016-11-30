@@ -20,8 +20,8 @@ var storage =   multer.diskStorage({
 var upload = multer({ storage : storage,
     fileFilter: function (req,file,cb) {
         if (!file) {
-            req.flash('message', 'No file selected. Try again.');
-            return cb (null, false, new Error('No file uploaded. Try again.'));
+            req.flash('message', 'No ha seleccionado un archivo. Intente nuevamente.');
+            return cb (null, false, new Error('No ha seleccionado un archivo. Intente nuevamente.'));
         }
         else {
             models.ListaNumeros.findAll({attributes: ['id', 'Nombre'],
@@ -30,14 +30,14 @@ var upload = multer({ storage : storage,
                     models.ListaNumeros.create({
                         Nombre: file.originalname
                     }).then(function (result) {
-                        req.flash('message', 'File has been successfully uploaded.');
+                        req.flash('message', 'Archivo correctamente subido.');
                         return cb (null, true);
 
                     });
                 }
                 else {
-                    req.flash('message', 'There is already a file with that name');
-                    return cb (null, false, new Error('There is already a file with that name'));
+                    req.flash('message', 'Ya existe un archivo con ese nombre');
+                    return cb (null, false, new Error('Ya existe un archivo con ese nombre'));
                 }
             });
         }
@@ -270,21 +270,21 @@ app.post('/api/phones', isLoggedIn, needsGroup(1) ,function(req,res) {
     upload(req, res, function (err) {
         if (err) {
             console.log(err);
-            req.flash('message', 'Error uploading file.');
+            req.flash('message', 'Error subiendo archivo.');
         }
         if(!req.file && req.flash('message').length==0)
-            req.flash('message', 'No file selected. Try again.');
+            req.flash('message', 'No ha seleccionado un archivo. Intente nuevamente.');
         else{
             if(req.file){
                 models.ListaNumeros.findAll({attributes: ['id', 'Nombre'],
                     where: {Nombre: req.file.originalname}}).then(function (data) {
                     if(data.length == 0)
-                        req.flash('message', 'File has been successfully uploaded.');
+                        req.flash('message', 'Archivo correctamente subido.');
                     getNumbers('./uploads/' + req.file.originalname, data[0].id);
                 });
             }
             else
-                req.flash('message', 'There is already a file with that name');
+                req.flash('message', 'Ya existe un archivo con ese nombre');
         }
         res.redirect("/profile-admin");
     });
