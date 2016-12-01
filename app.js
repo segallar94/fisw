@@ -34,7 +34,8 @@ app.use(passport.session()); // persistent login sessions
 //app.use(express.static(path.join(__dirname, 'angular')));
 require('./config/passport.js')(passport); // pass passport for configuration
 //require('./routes/router.js')(app, passport); // load our routes and pass in our app and fully configured passport
-app.use(express.static('public'));
+
+app.use(express.static(__dirname + '/public'));
 //
 app.use('/', routes);
 //app.use('/users', users);

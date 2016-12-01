@@ -4,13 +4,9 @@
   <title>C A T I</title>
   <link rel="stylesheet" href="https://bootswatch.com/united/bootstrap.min.css">
   <link rel="stylesheet" href="https://bootswatch.com/united/bootstrap.css">
-  <a class="ex1">
-    <img class="custom-left" src="http://inf.utfsm.cl/images/sitio/logo-usm.png">
-  </a>
 
-    <a class="ex1">
-        <img class="custom-right" src="http://www.industrias.usm.cl/wp-content/themes/usm-php/assets/img/industrias_&#10;&#9;&#9;&#9;&#9;usm.png" alt="" width="110">
-    </a>
+    <img class='custom-left' src='http://localhost:8080/images/logo-usm.png' width="196px" height="100px">
+    <img class='custom-right' src='http://localhost:8080/images/industrias_usm.png' width="130px" height="130px">
   <style>
     body        { padding-top:30px; }
     a.ex1 {
@@ -18,20 +14,28 @@
       margin-bottom: 1cm;
     }
     img.custom-left {
-        margin-bottom: 2cm;
+        background: url("../public/images/logo-usm.png") no-repeat;
+        position: absolute;
+        left: 20px;
+        top: 35px;
+        z-index: 1;
     }
     img.custom-right{
-        margin-bottom: 2cm;
-        margin-left: 19cm;
+        background: url("../public/images/industrias_usm.png") no repeat;
+        position: absolute;
+        right: 20px;
+        top: 15px;
     }
     h1{
-        margin-bottom: 2cm;
+      margin-bottom: 2cm;
     }
     hr{
-        margin-bottom: 1cm;
+      margin-bottom: 1cm;
     }
-    div.jumbotron text-center{
-ma        width: 50%;
+    div.jumbotron.text-center{
+        margin-top: 135px;
+        margin-bottom: 0px;
+        border-radius: 35px;
     }
   </style>
 </head>

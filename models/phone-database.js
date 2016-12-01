@@ -10,10 +10,10 @@ module.exports = function(sequelize, Datatypes){
             associate: function (models) {
                 ListaNumeros.hasMany(models.Numero);
                 ListaNumeros.belongsTo(models.Proyecto, {
-                    onDelete: "CASCADE",
-                    foreignKey: {
+                    foreignKeyConstraint: {
                         allowNull: true
-                    }
+                    },
+                    onDelete: "SET NULL"
                 });
             }
         }

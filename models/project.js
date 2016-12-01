@@ -9,7 +9,7 @@ module.exports = function(sequelize, DataTypes){
     }, {
         classMethods: {
             associate: function (models) {
-                Proyecto.hasMany(models.ListaNumeros);
+                Proyecto.hasMany(models.ListaNumeros, {onDelete: "SET NULL"});
             }
         }
     });

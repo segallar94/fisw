@@ -431,11 +431,21 @@ app.put('/projects/:id', isLoggedIn, needsGroup(1), function(req,res,next){
 
 app.delete('/projects/:id', isLoggedIn, needsGroup(1),function(req,res,next){
     try{
-        models.Proyecto.destroy({where: {id: req.params.id} }).then(function () {
-            return models.Proyecto.findAll().then(function (project) {
-                res.json(project);
-            })
-        })
+        var pid = req.params.id;
+        models.ListaNumeros.findAll({where: {ProyectoId: pid}}).then(function (listas) {
+            for (i=0;i<listas.length; i++){
+            listas[i].updateAttributes({
+                ProyectoId: null
+            }).then(function () {
+                models.Proyecto.destroy({where: {id: req.params.id} }).then(function () {
+                    return models.Proyecto.findAll().then(function (project) {
+                        res.json(project);
+                    })
+                })
+            })}
+
+        });
+
     }
     catch(ex){
         console.error("Internal error:"+ex);
